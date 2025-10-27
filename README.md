@@ -36,7 +36,11 @@ A Django-based web application to manage import/export trading, clients, user au
 - Enter test data, view dashboards (static or dynamic as developed)
 
 ## Contributing
-- Open a pull request or contact the maintainers
+- Karmanya Gupta
+- Sampreeti Mohapatra
+- Shreyaan Sardana
+- Sree Daiwik B
+- Daniel Jose Blessy
 
 ## Contact
-- Project maintained by: [Your Name]
+- Project maintained by: Karmanya Gupta
