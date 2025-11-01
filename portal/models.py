@@ -22,3 +22,33 @@ class Document(models.Model):
         ordering = ['-uploaded_at']
 
 # Create your models here.
+class Shipment(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_transit', 'In Transit'),
+        ('customs', 'Customs Clearance'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    SHIPMENT_TYPE = [
+        ('import', 'Import'),
+        ('export', 'Export'),
+    ]
+    
+    tracking_number = models.CharField(max_length=100, unique=True)
+    shipment_type = models.CharField(max_length=10, choices=SHIPMENT_TYPE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    origin = models.CharField(max_length=200)
+    destination = models.CharField(max_length=200)
+    description = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    estimated_delivery = models.DateField()
+    
+    def __str__(self):
+        return f"{self.tracking_number} - {self.get_status_display()}"
+    
+    class Meta:
+        ordering = ['-created_at']
