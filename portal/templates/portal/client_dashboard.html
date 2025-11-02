@@ -1,0 +1,67 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Welcome to your Client Dashboard, {{ user.username }}!</h2>
+    <hr>
+    <div class="row">
+        <!-- Trade Records -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white fw-bold">
+                    Recent Trade Records
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if trades %}
+                                {% for trade in trades %}
+                                    <tr>
+                                        <td>{{ trade.product }}</td>
+                                        <td>{{ trade.quantity }}</td>
+                                        <td>${{ trade.price }}</td>
+                                        <td>{{ trade.date }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No trade records yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Quick Actions -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">
+                    Quick Actions
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'trade_entry' %}" class="btn btn-success w-100 mb-2">
+                        Add Trade Entry
+                    </a>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'document_list' %}" class="btn btn-outline-primary w-100 mb-2">
+                                Manage Documents
+                            </a>
+                        </li>
+                        <!-- Add new actions or widgets here in the future -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

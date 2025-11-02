@@ -1,0 +1,127 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">Admin Dashboard</h2>
+  <div class="row mb-4 g-3">
+    <!-- Summary Cards -->
+    <div class="col-md-3">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-people fs-2 text-primary me-3"></i>
+            <div>
+              <h5 class="card-title mb-1">Total Clients</h5>
+              <div class="fs-5 fw-bold">{{ total_clients|default:"175" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-success shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-text fs-2 text-success me-3"></i>
+            <div>
+              <h5 class="card-title mb-1">Documents</h5>
+              <div class="fs-5 fw-bold">{{ total_documents|default:"417" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-info shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-truck fs-2 text-info me-3"></i>
+            <div>
+              <h5 class="card-title mb-1">Shipments</h5>
+              <div class="fs-5 fw-bold">{{ total_shipments|default:"67" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-warning shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-bar-chart-line fs-2 text-warning me-3"></i>
+            <div>
+              <h5 class="card-title mb-1">Revenue (USD)</h5>
+              <div class="fs-5 fw-bold">${{ total_revenue|default:"85,900" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">Quick Actions</div>
+        <div class="card-body">
+          <button class="btn btn-outline-primary mb-2 w-100">Add New Client</button>
+          <button class="btn btn-outline-success mb-2 w-100">Upload Document</button>
+          <button class="btn btn-outline-info mb-2 w-100">Track Shipments</button>
+          <button class="btn btn-outline-dark w-100">Generate Report</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">Live System Status</div>
+        <div class="card-body">
+          <div class="alert alert-success mb-2"><i class="bi bi-check-circle me-2"></i>All systems operational</div>
+          <div class="alert alert-warning mb-0"><i class="bi bi-exclamation-triangle me-2"></i>No pending approvals</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity Table -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-secondary text-white">Recent User Activity</div>
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Action</th>
+            <th>Date & Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Karma</td><td>Uploaded shipment invoice</td><td>2025-11-03 10:11 AM</td></tr>
+          <tr><td>TradeAdmin</td><td>Created client user</td><td>2025-11-02 4:36 PM</td></tr>
+          <tr><td>ExportUser</td><td>Deleted document</td><td>2025-11-02 9:29 AM</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Charts Placeholder -->
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">Monthly Shipment Trends</div>
+        <div class="card-body">
+          <div class="text-center text-muted">[Shipment trends chart here]</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">Revenue Breakdown</div>
+        <div class="card-body">
+          <div class="text-center text-muted">[Revenue chart here]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

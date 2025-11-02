@@ -1,12 +1,32 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Document, Shipment
-from .forms import DocumentForm, ShipmentForm
+from django.contrib.admin.views.decorators import staff_member_required
+from .forms import DocumentForm, ShipmentForm, TradeForm
+from .models import Document, Shipment, Trade
+
+
+
 def home(request):
     return render(request,'portal/index.html')
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth import authenticate, login as auth_login
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            if user.is_superuser or user.is_staff:
+                return redirect('admin_dashboard')
+            else:
+                return redirect('client_dashboard')
+        else:
+            messages.error(request, "Invalid username or password")
+            return redirect('login')
+    return render(request,'portal/login.html')
 def signup(request):
     if request.method=="POST":
         form=UserCreationForm(request.POST)
@@ -17,10 +37,16 @@ def signup(request):
     else:
         form=UserCreationForm()
     return render(request,'portal/signup.html',{'form': form})
+def client_dashboard(request):
+    trades=Trade.objects.filter(user=request.user).order_by('-date')
+    return render(request,'portal/client_dashboard.html',{'trades':trades})
+@staff_member_required
+def admin_dashboard(request):
+    return render(request,'portal/admin_dashboard.html')
 @login_required
 def document_list(request):
     documents = Document.objects.all()
-    return render(request,'Portal/document_list.html', {'documents':documents})
+    return render(request,'portal/document_list.html', {'documents':documents})
 @login_required
 def document_upload(request):
     if request.method == 'POST':
@@ -92,3 +118,16 @@ def shipment_delete(request, pk):
 
 
 # Create your views here.
+@login_required
+def trade_entry(request):
+    if request.method == 'POST':
+        form = TradeForm(request.POST)
+        if form.is_valid():
+            trade= form.save(commit=False)
+            trade.user=request.user
+            trade.save()
+            messages.success(request,'Trade entry created successfully!')
+            return redirect('client_dashboard')
+    else:
+        form=TradeForm()
+    return render(request,'portal/trade_entry.html', {'form': form})

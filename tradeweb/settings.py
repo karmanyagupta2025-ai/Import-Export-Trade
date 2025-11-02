@@ -127,3 +127,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login URL
 LOGIN_URL = 'login'
 
+#LOGIN_REDIRECT_URL = '/dashboard/'
+

@@ -52,3 +52,13 @@ class Shipment(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+class Trade(models.Model):
+        user = models.ForeignKey(User, on_delete=models.CASCADE)
+        product = models.CharField(max_length=200)
+        quantity = models.PositiveIntegerField()
+        price = models.DecimalField(max_digits=10, decimal_places=2)
+        date = models.DateField()
+        created_at = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self):
+            return f"{self.product} ({self.quantity}) - {self.user.username}"
