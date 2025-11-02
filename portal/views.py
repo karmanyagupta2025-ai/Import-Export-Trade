@@ -23,17 +23,18 @@ def document_list(request):
     return render(request,'Portal/document_list.html', {'documents':documents})
 @login_required
 def document_upload(request):
-    if request.method=='POST':
-        form=DocumentForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            document=form.save(commit=False)
-            document.uploaded_by=request.user
+            document = form.save(commit=False)
+            document.uploaded_by = request.user
             document.save()
-            messages.success(request,'Document uploaded successfully')
+            messages.success(request, 'Document uploaded successfully!')
             return redirect('document_list')
-        else:
-            form=DocumentForm()
-        return render(request,'portal/document_upload.html',{'form':form})
+    else:
+        form = DocumentForm()
+    return render(request, 'portal/document_upload.html', {'form': form})
+
 @login_required
 def document_delete(request,pk):
     document=get_object_or_404(Document, pk=pk)
