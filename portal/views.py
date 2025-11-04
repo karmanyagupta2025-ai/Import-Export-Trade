@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import DocumentForm, ShipmentForm, TradeForm
 from .models import Document, Shipment, Trade
+from django.core.mail import send_mail
 
 
 
@@ -121,11 +122,34 @@ def shipment_delete(request, pk):
 @login_required
 def trade_entry(request):
     if request.method == 'POST':
+        print("Debug - Trade entry POST received")
         form = TradeForm(request.POST)
+        print("DEBUG - Is form valid?", form.is_valid())
         if form.is_valid():
             trade= form.save(commit=False)
             trade.user=request.user
             trade.save()
+            subject = 'New Trade Entry Recorded'
+            message = (
+                f"Dear {request.user.username},\n\n"
+                "Your trade entry has been successfully recorded.\n\n"
+                f"Product: {trade.product}\n"
+                f"Quantity: {trade.quantity}\n"
+                f"Price: {trade.price}\n"
+                f"Date: {trade.date}\n\n"
+                "Thank you for using our service."
+            )
+        try:
+            print("DEBUG - Sending to:",request.user.email)
+            send_mail(
+                subject,
+                message,
+                None,  # Uses DEFAULT_FROM_EMAIL
+                [request.user.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print(e)
             messages.success(request,'Trade entry created successfully!')
             return redirect('client_dashboard')
     else:
