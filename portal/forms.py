@@ -1,5 +1,5 @@
 from django import forms
-from .models import Document, Shipment
+from .models import Document, Shipment, Trade
 
 class DocumentForm(forms.ModelForm):
     class Meta:
@@ -25,3 +25,7 @@ class ShipmentForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Shipment details'}),
             'estimated_delivery': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
+class TradeForm(forms.ModelForm):
+    class Meta:
+        model = Trade
+        fields = ['product','quantity','price','date']
