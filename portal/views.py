@@ -3,8 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import DocumentForm, ShipmentForm, TradeForm
-from .models import Document, Shipment, Trade
+from .models import Document, Shipment, Trade, User, ActivityLog
 from django.core.mail import send_mail
+from django.shortcuts import render
+from django.db.models import Sum
+
 
 
 
@@ -43,6 +46,28 @@ def client_dashboard(request):
     return render(request,'portal/client_dashboard.html',{'trades':trades})
 @staff_member_required
 def admin_dashboard(request):
+    total_clients=User.objects.filter(is_staff=False).count()
+    total_trades=Trade.objects.count()
+    total_shipments=Shipment.objects.count()
+    total_documents=Document.objects.count()
+    total_revenue=Trade.objects.aggregate(total=Sum('price'))['total'] or 0
+    recent_activities=ActivityLog.objects.all().order_by('-timestamp')[:10]
+    shipment_labels=['Jan','Feb','Mar','Apr','May','Jun','Jul']
+    shipment_data=[10,15,20,18,25,30,28]
+    revenue_labels=shipment_labels
+    revenue_data=[1000,1200,1500,1400,1600,1800,1750]
+    context={
+        'total_clients':total_clients,
+        'total_documents':total_documents,
+        'total_trades':total_trades,
+        'total_shipments':total_shipments,
+        'total_revenue':total_revenue,
+        'recent_activities':recent_activities,
+        'shipment_labels':shipment_labels,
+        'revenue_labels':revenue_labels,
+        'revenue_data':revenue_data,
+        'shipment_data':shipment_data,
+    }
     return render(request,'portal/admin_dashboard.html')
 @login_required
 def document_list(request):
@@ -122,13 +147,15 @@ def shipment_delete(request, pk):
 @login_required
 def trade_entry(request):
     if request.method == 'POST':
-        print("Debug - Trade entry POST received")
         form = TradeForm(request.POST)
-        print("DEBUG - Is form valid?", form.is_valid())
         if form.is_valid():
-            trade= form.save(commit=False)
-            trade.user=request.user
+            trade = form.save(commit=False)
+            trade.user = request.user
             trade.save()
+            ActivityLog.objects.create(
+                user=request.user,
+                action=f"Created a new trade for product: {trade.product}"
+            )
             subject = 'New Trade Entry Recorded'
             message = (
                 f"Dear {request.user.username},\n\n"
@@ -139,19 +166,16 @@ def trade_entry(request):
                 f"Date: {trade.date}\n\n"
                 "Thank you for using our service."
             )
-        try:
-            print("DEBUG - Sending to:",request.user.email)
             send_mail(
                 subject,
                 message,
-                None,  # Uses DEFAULT_FROM_EMAIL
+                None,  # Or DEFAULT_FROM_EMAIL
                 [request.user.email],
-                fail_silently=False,
+                fail_silently=False,  # Shows errors in terminal
             )
-        except Exception as e:
-            print(e)
-            messages.success(request,'Trade entry created successfully!')
+            messages.success(request, 'Trade entry created successfully!')
             return redirect('client_dashboard')
     else:
-        form=TradeForm()
-    return render(request,'portal/trade_entry.html', {'form': form})
+        form = TradeForm()
+    return render(request, 'portal/trade_entry.html', {'form': form})
+

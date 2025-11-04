@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container py-4">
   <h2 class="mb-4">Admin Dashboard</h2>
+
   <div class="row mb-4 g-3">
     <!-- Summary Cards -->
     <div class="col-md-3">
@@ -18,6 +19,7 @@
         </div>
       </div>
     </div>
+
     <div class="col-md-3">
       <div class="card border-success shadow-sm">
         <div class="card-body">
@@ -31,6 +33,7 @@
         </div>
       </div>
     </div>
+
     <div class="col-md-3">
       <div class="card border-info shadow-sm">
         <div class="card-body">
@@ -44,6 +47,7 @@
         </div>
       </div>
     </div>
+
     <div class="col-md-3">
       <div class="card border-warning shadow-sm">
         <div class="card-body">
@@ -96,9 +100,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>Karma</td><td>Uploaded shipment invoice</td><td>2025-11-03 10:11 AM</td></tr>
-          <tr><td>TradeAdmin</td><td>Created client user</td><td>2025-11-02 4:36 PM</td></tr>
-          <tr><td>ExportUser</td><td>Deleted document</td><td>2025-11-02 9:29 AM</td></tr>
+          {% for activity in recent_activities %}
+          <tr>
+            <td>{{ activity.user.username }}</td>
+            <td>{{ activity.action }}</td>
+            <td>{{ activity.timestamp|date:"Y-m-d h:i A" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center">No recent activity found.</td></tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -110,7 +120,7 @@
       <div class="card shadow-sm">
         <div class="card-header bg-info text-white">Monthly Shipment Trends</div>
         <div class="card-body">
-          <div class="text-center text-muted">[Shipment trends chart here]</div>
+          <canvas id="shipmentChart"></canvas>
         </div>
       </div>
     </div>
@@ -118,10 +128,42 @@
       <div class="card shadow-sm">
         <div class="card-header bg-warning text-dark">Revenue Breakdown</div>
         <div class="card-body">
-          <div class="text-center text-muted">[Revenue chart here]</div>
+          <canvas id="revenueChart"></canvas>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Example Chart data for Shipments (replace with your dynamic data)
+  const shipmentCtx = document.getElementById('shipmentChart').getContext('2d');
+  const shipmentChart = new Chart(shipmentCtx, {
+      type: 'line',
+      data: {
+          labels: {{ shipment_labels|safe }},
+          datasets: [{
+              label: 'Shipments Over Time',
+              data: {{ shipment_data|safe }},
+              borderColor: 'rgba(54, 162, 235, 1)',
+              fill: false
+          }]
+      }
+  });
+
+  // Example Chart data for Revenue (replace with your dynamic data)
+  const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+  const revenueChart = new Chart(revenueCtx, {
+      type: 'bar',
+      data: {
+          labels: {{ revenue_labels|safe }},
+          datasets: [{
+              label: 'Monthly Revenue',
+              data: {{ revenue_data|safe }},
+              backgroundColor: 'rgba(255, 206, 86, 0.7)'
+          }]
+      }
+  });
+</script>
 {% endblock %}
