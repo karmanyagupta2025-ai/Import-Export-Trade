@@ -68,7 +68,7 @@ def admin_dashboard(request):
         'revenue_data':revenue_data,
         'shipment_data':shipment_data,
     }
-    return render(request,'portal/admin_dashboard.html')
+    return render(request,'portal/admin_dashboard.html',context)
 @login_required
 def document_list(request):
     documents = Document.objects.all()
@@ -109,6 +109,10 @@ def shipment_create(request):
             shipment = form.save(commit=False)
             shipment.created_by = request.user
             shipment.save()
+            ActivityLog.objects.create(
+                user=request.user,
+                action=f"Created a new shipment with ID: {shipment.id}"
+            )
             messages.success(request, 'Shipment created successfully!')
             return redirect('shipment_list')
     else:
@@ -127,6 +131,10 @@ def shipment_update(request, pk):
         form = ShipmentForm(request.POST, instance=shipment)
         if form.is_valid():
             form.save()
+            ActivityLog.objects.create(
+                user=request.user,
+                action=f"Updated shipment with ID: {shipment.id}"
+            )
             messages.success(request, 'Shipment updated successfully!')
             return redirect('shipment_detail', pk=shipment.pk)
     else:

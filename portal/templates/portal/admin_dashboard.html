@@ -4,10 +4,6 @@
 <div class="container py-4">
   <h2 class="mb-4">Admin Dashboard</h2>
 
-<<<<<<< HEAD
-=======
-  <!-- Summary Cards Row -->
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
   <div class="row mb-4 g-3">
     <div class="col-md-3">
       <div class="card border-primary shadow-sm h-100">
@@ -103,34 +99,9 @@
 
   <!-- Recent Activity Table -->
   <div class="card shadow-sm mb-4">
-<<<<<<< HEAD
+
     <div class="card-header bg-secondary text-white">Recent User Activity</div>
     <div class="card-body">
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Action</th>
-            <th>Date & Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for activity in recent_activities %}
-          <tr>
-            <td>{{ activity.user.username }}</td>
-            <td>{{ activity.action }}</td>
-            <td>{{ activity.timestamp|date:"Y-m-d h:i A" }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="3" class="text-center">No recent activity found.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-=======
-    <div class="card-header bg-secondary text-white fw-bold">
-      <i class="bi bi-clock-history me-2"></i>Recent User Activity
-    </div>
-    <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover mb-0">
           <thead class="table-light">
@@ -160,7 +131,6 @@
           </tbody>
         </table>
       </div>
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
     </div>
   </div>
 
@@ -172,11 +142,11 @@
           <i class="bi bi-graph-up me-2"></i>Monthly Shipment Trends
         </div>
         <div class="card-body">
-<<<<<<< HEAD
+
           <canvas id="shipmentChart"></canvas>
-=======
+
           <canvas id="shipmentChart" style="max-height: 300px;"></canvas>
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
+
         </div>
       </div>
     </div>
@@ -187,44 +157,22 @@
           <i class="bi bi-pie-chart me-2"></i>Revenue Breakdown
         </div>
         <div class="card-body">
-<<<<<<< HEAD
           <canvas id="revenueChart"></canvas>
-=======
           <canvas id="revenueChart" style="max-height: 300px;"></canvas>
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<<<<<<< HEAD
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Example Chart data for Shipments (replace with your dynamic data)
-=======
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  // Shipment Trends Chart
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
   const shipmentCtx = document.getElementById('shipmentChart').getContext('2d');
   const shipmentChart = new Chart(shipmentCtx, {
       type: 'line',
       data: {
           labels: {{ shipment_labels|safe }},
           datasets: [{
-<<<<<<< HEAD
-              label: 'Shipments Over Time',
-              data: {{ shipment_data|safe }},
-              borderColor: 'rgba(54, 162, 235, 1)',
-              fill: false
-          }]
-      }
-  });
-
-  // Example Chart data for Revenue (replace with your dynamic data)
-=======
               label: 'Shipments',
               data: {{ shipment_data|safe }},
               borderColor: 'rgba(13, 202, 240, 1)',
@@ -249,20 +197,12 @@
       }
   });
 
-  // Revenue Breakdown Chart
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
   const revenueCtx = document.getElementById('revenueChart').getContext('2d');
   const revenueChart = new Chart(revenueCtx, {
       type: 'bar',
       data: {
           labels: {{ revenue_labels|safe }},
           datasets: [{
-<<<<<<< HEAD
-              label: 'Monthly Revenue',
-              data: {{ revenue_data|safe }},
-              backgroundColor: 'rgba(255, 206, 86, 0.7)'
-          }]
-=======
               label: 'Revenue (USD)',
               data: {{ revenue_data|safe }},
               backgroundColor: 'rgba(255, 193, 7, 0.7)',
@@ -283,7 +223,6 @@
                   beginAtZero: true
               }
           }
->>>>>>> adda2ecc696c4646f2e36e20fa476b70546fa5e2
       }
   });
 </script>
