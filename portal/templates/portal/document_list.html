@@ -1,61 +1,310 @@
-{% extends 'portal/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Management - Trade Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .navbar-menu a.active {
+            background: #007bff;
+        }
+        
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background: #c82333;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .btn-upload {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-upload:hover {
+            background: #0056b3;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        /* Document Table Card */
+        .document-card {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        tbody tr {
+            transition: background 0.2s;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Action Buttons */
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .btn-download {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: #138496;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .empty-text {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            📦 Trade Portal
+        </div>
+        
+        <ul class="navbar-menu">
+            {% if user.is_staff %}
+            <li><a href="{% url 'admin_dashboard' %}">🏠 Home</a></li>
+            {% else %}
+            <li><a href="{% url 'client_dashboard' %}">🏠 Home</a></li>
+            {% endif %}
 
-{% block content %}
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Document Management</h2>
-        <a href="{% url 'document_upload' %}" class="btn btn-primary">
-            <i class="bi bi-upload"></i> Upload Document
-        </a>
-    </div>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <li><a href="{% url 'shipment_list' %}">📦 Shipments</a></li>
+            <li><a href="{% url 'document_list' %}" class="active">📄 Documents</a></li>
+            {% if user.is_staff %}
+            <li><a href="{% url 'admin_dashboard' %}">⚙️ Admin</a></li>
+            {% endif %}
+        </ul>
+        
+        <div class="navbar-user">
+            <span>👤 {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">📄 Document Management</h1>
+            <a href="{% url 'document_upload' %}" class="btn-upload">
+                ➕ Upload Document
+            </a>
+        </div>
+        
+        <!-- Success Message -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="success-message">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Uploaded By</th>
-                    <th>Upload Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for document in documents %}
-                <tr>
-                    <td>{{ document.title }}</td>
-                    <td>
-                        <span class="badge bg-{% if document.document_type == 'import' %}success{% else %}info{% endif %}">
-                            {{ document.get_document_type_display }}
-                        </span>
-                    </td>
-                    <td>{{ document.uploaded_by.username }}</td>
-                    <td>{{ document.uploaded_at|date:"M d, Y H:i" }}</td>
-                    <td>
-                        <a href="{{ document.file.url }}" class="btn btn-sm btn-success" target="_blank">
-                            <i class="bi bi-download"></i> Download
-                        </a>
-                        <a href="{% url 'document_delete' document.pk %}" class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center text-muted">No documents uploaded yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% endfor %}
+        {% endif %}
+        
+        <!-- Documents Table -->
+        <div class="document-card">
+            {% if documents %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Uploaded By</th>
+                        <th>Upload Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for document in documents %}
+                    <tr>
+                        <td><strong>{{ document.title }}</strong></td>
+                        <td>{{ document.get_document_type_display }}</td>
+                        <td>{{ document.uploaded_by.username }}</td>
+                        <td>{{ document.uploaded_at|date:"M d, Y H:i" }}</td>
+                        <td>
+                            <a href="{{ document.file.url }}" class="btn-action btn-download" download>
+                                📥 Download
+                            </a>
+                            <a href="{% url 'document_delete' document.pk %}" class="btn-action btn-delete">
+                                🗑️ Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📄</div>
+                <div class="empty-text">No documents found</div>
+                <a href="{% url 'document_upload' %}" class="btn-upload">
+                    ➕ Upload Your First Document
+                </a>
+            </div>
+            {% endif %}
+        </div>
     </div>
-</div>
-{% endblock %}
+</body>
+</html>
