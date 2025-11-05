@@ -99,14 +99,15 @@
         
         <ul class="navbar-menu">
             {% if user.is_staff %}
-            <li><a href="{% url 'admin_dashboard' %}" {% if 'admin' in request.path %}class="active"{% endif %}>🏠 Home</a></li>
+            <li><a href="{% url 'home' %}" {% if 'admin' in request.path %}class="active"{% endif %}>🏠 Home</a></li>
             {% else %}
-            <li><a href="{% url 'client_dashboard' %}" {% if 'client' in request.path %}class="active"{% endif %}>🏠 Home</a></li>
+            <li><a href="{% url 'home' %}" {% if 'client' in request.path %}class="active"{% endif %}>🏠 Home</a></li>
             {% endif %}
             <li><a href="{% url 'shipment_list' %}" {% if 'shipment' in request.path %}class="active"{% endif %}>📦 Shipments</a></li>
             <li><a href="{% url 'document_list' %}" {% if 'document' in request.path %}class="active"{% endif %}>📄 Documents</a></li>
             {% if user.is_staff %}
-            <li><a href="{% url 'admin_dashboard' %}" {% if 'admin' in request.path %}class="active"{% endif %}>⚙️ Admin</a></li>
+            <li><a href="{% url 'admin_dashboard' %}" {% if 'admin' in request.path %}class="active"{% endif %}>⚙️ Your Dashboard</a></li>
+	    <li><a href="{%url 'client_dashboard' %}" {% if 'client' in request.path %}class="active"{% endif %}>⚙️ Your Dashboard</a></li>
             {% endif %}
         </ul>
         

@@ -279,22 +279,7 @@
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="navbar-brand">
-            📦 Trade Portal
-        </div>
-        
-        <ul class="navbar-menu">
-            <li><a href="{% url 'admin_dashboard' %}">🏠 Dashboard</a></li>
-            <li><a href="{% url 'shipment_list' %}">📦 Shipments</a></li>
-            <li><a href="{% url 'document_list' %}">📄 Documents</a></li>
-        </ul>
-        
-        <div class="navbar-user">
-            <span>👤 {{ user.username }}</span>
-            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
-        </div>
-    </nav>
+
     
     <!-- Main Content -->
     <div class="container">
@@ -330,7 +315,7 @@
                 <div class="stat-icon">📊</div>
                 <div class="stat-content">
                     <div class="stat-label">Revenue (USD)</div>
-                    <div class="stat-value">${{ total_revenue }}</div>
+                    <div class="stat-value">$0</div>
                 </div>
             </div>
         </div>
