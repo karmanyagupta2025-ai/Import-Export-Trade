@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shipments - Trade Portal</title>
+    <title>Shipment Management - Trade Portal</title>
     <style>
         * {
             margin: 0;
@@ -14,99 +14,159 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f5f5f5;
-            padding: 20px;
         }
         
+        /* Navigation Bar */
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .navbar-menu a.active {
+            background: #007bff;
+        }
+        
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background: #c82333;
+        }
+        
+        /* Container */
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 40px auto;
+            padding: 0 20px;
         }
         
-        .header {
+        /* Page Header */
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
         
-        h1 {
+        .page-title {
             font-size: 28px;
-            color: #333;
+            font-weight: 600;
+            color: #2c3e50;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .btn {
-            padding: 10px 20px;
+        .btn-create {
             background: #007bff;
             color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
             text-decoration: none;
-            border-radius: 5px;
             transition: background 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
         
-        .btn:hover {
+        .btn-create:hover {
             background: #0056b3;
         }
         
-        .btn-sm {
-            padding: 5px 12px;
-            font-size: 14px;
-            margin-right: 5px;
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-        }
-        
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        
-        .btn-danger {
-            background: #dc3545;
-        }
-        
-        .btn-danger:hover {
-            background: #c82333;
+        /* Shipment Table Card */
+        .shipment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+        }
+        
+        thead {
+            background: #f8f9fa;
         }
         
         th {
-            background: #f8f9fa;
-            padding: 15px;
+            padding: 16px;
             text-align: left;
             font-weight: 600;
+            color: #2c3e50;
             border-bottom: 2px solid #dee2e6;
+            font-size: 14px;
         }
         
         td {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
         }
         
-        tr:hover {
+        tbody tr {
+            transition: background 0.2s;
+        }
+        
+        tbody tr:hover {
             background: #f8f9fa;
         }
         
-        .status {
+        /* Status Badge */
+        .status-badge {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
         
@@ -120,116 +180,165 @@
             color: #0c5460;
         }
         
-        .status-customs {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-customs_clearance {
-            background: #d4edda;
-            color: #155724;
-        }
-        
         .status-delivered {
             background: #d4edda;
             color: #155724;
         }
         
-        .status-cancelled {
-            background: #f8d7da;
-            color: #721c24;
+        .status-customs {
+            background: #e2e3e5;
+            color: #383d41;
         }
         
+        /* Action Buttons */
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #138496;
+        }
+        
+        .btn-edit {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: #5a6268;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #6c757d;
         }
         
-        .empty-state h3 {
-            margin-bottom: 10px;
-        }
-        
-        .message {
-            padding: 15px;
+        .empty-icon {
+            font-size: 64px;
             margin-bottom: 20px;
-            border-radius: 5px;
+            opacity: 0.3;
         }
         
-        .message-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .message-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .empty-text {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📦 Shipment Management</h1>
-            <a href="{% url 'shipment_create' %}" class="btn">➕ Create New Shipment</a>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            📦 Trade Portal
         </div>
-
-        {% if messages %}
-            {% for message in messages %}
-            <div class="message message-{{ message.tags }}">
-                {{ message }}
+        
+        <ul class="navbar-menu">
+            {% if user.is_staff %}
+            <li><a href="{% url 'admin_dashboard' %}">🏠 Home</a></li>
+            {% else %}
+            <li><a href="{% url 'client_dashboard' %}">🏠 Home</a></li>
+            {% endif %}
+            <li><a href="{% url 'shipment_list' %}" class="active">📦 Shipments</a></li>
+            <li><a href="{% url 'document_list' %}">📄 Documents</a></li>
+            {% if user.is_staff %}
+            <li><a href="{% url 'admin_dashboard' %}">⚙️ Admin</a></li>
+            {% endif %}
+        </ul>
+        
+        <div class="navbar-user">
+            <span>👤 {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                📦 Shipment Management
+            </h1>
+            <a href="{% url 'shipment_create' %}" class="btn-create">
+                ➕ Create New Shipment
+            </a>
+        </div>
+        
+        <!-- Shipments Table -->
+        <div class="shipment-card">
+            {% if shipments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tracking #</th>
+                        <th>Route</th>
+                        <th>Status</th>
+                        <th>Expected Delivery</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shipment in shipments %}
+                    <tr>
+                        <td><strong>{{ shipment.tracking_number }}</strong></td>
+                        <td>{{ shipment.origin }} → {{ shipment.destination }}</td>
+                        <td>
+                            <span class="status-badge status-{{ shipment.status }}">
+                                {% if shipment.status == 'pending' %}⏳ Pending
+                                {% elif shipment.status == 'in_transit' %}🚚 In Transit
+                                {% elif shipment.status == 'delivered' %}✅ Delivered
+                                {% elif shipment.status == 'customs' %}🛃 Customs
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>{{ shipment.estimated_delivery|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'shipment_detail' shipment.pk %}" class="btn-action btn-view">
+                                View
+                            </a>
+                            <a href="{% url 'shipment_update' shipment.pk %}" class="btn-action btn-edit">
+                                Edit
+                            </a>
+                            <a href="{% url 'shipment_delete' shipment.pk %}" class="btn-action btn-delete">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <div class="empty-text">No shipments found</div>
+                <a href="{% url 'shipment_create' %}" class="btn-create">
+                    ➕ Create Your First Shipment
+                </a>
             </div>
-            {% endfor %}
-        {% endif %}
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Tracking #</th>
-                    <th>Route</th>
-                    <th>Status</th>
-                    <th>Expected Delivery</th>
-                    <th style="text-align: center;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for shipment in shipments %}
-                <tr>
-                    <td><strong>{{ shipment.tracking_number }}</strong></td>
-                    <td>{{ shipment.origin }} → {{ shipment.destination }}</td>
-                    <td>
-                        <span class="status status-{{ shipment.status }}">
-                            {% if shipment.status == 'pending' %}⏳ Pending
-                            {% elif shipment.status == 'in_transit' %}🚚 In Transit
-                            {% elif shipment.status == 'customs' %}🛃 Customs
-                            {% elif shipment.status == 'customs_clearance' %}✅ Customs Clearance
-                            {% elif shipment.status == 'delivered' %}📦 Delivered
-                            {% elif shipment.status == 'cancelled' %}❌ Cancelled
-                            {% else %}{{ shipment.get_status_display }}
-                            {% endif %}
-                        </span>
-                    </td>
-                    <td>{{ shipment.estimated_delivery|date:"M d, Y" }}</td>
-                    <td style="text-align: center;">
-                        <a href="{% url 'shipment_detail' shipment.pk %}" class="btn btn-sm">View</a>
-                        <a href="{% url 'shipment_update' shipment.pk %}" class="btn btn-sm btn-secondary">Edit</a>
-                        <a href="{% url 'shipment_delete' shipment.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">
-                        <div class="empty-state">
-                            <h3>📭 No shipments found</h3>
-                            <p>Create your first shipment to get started!</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

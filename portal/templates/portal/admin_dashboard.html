@@ -1,229 +1,370 @@
-{% extends 'portal/base.html' %}
-
-{% block content %}
-<div class="container py-4">
-  <h2 class="mb-4">Admin Dashboard</h2>
-
-  <!-- Summary Cards Row -->
-  <div class="row mb-4 g-3">
-    <div class="col-md-3">
-      <div class="card border-primary shadow-sm h-100">
-        <div class="card-body text-center">
-          <i class="bi bi-people fs-1 text-primary mb-2"></i>
-          <h6 class="text-muted mb-1">Total Clients</h6>
-          <h3 class="fw-bold mb-0">{{ total_clients|default:"175" }}</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Trade Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .navbar-menu a.active {
+            background: #007bff;
+        }
+        
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background: #c82333;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            font-size: 48px;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* Two Column Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            background: #007bff;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -25px -25px 20px -25px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .card-header.green {
+            background: #28a745;
+        }
+        
+        /* Quick Actions */
+        .action-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: 2px solid #007bff;
+            color: #007bff;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .action-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-generate {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+        
+        .btn-generate:hover {
+            background: #6c757d;
+            color: white;
+        }
+        
+        /* Status Boxes */
+        .status-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-box.green {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-box.yellow {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Activity Table */
+        .activity-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-header {
+            background: #6c757d;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -25px -25px 20px -25px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            📦 Trade Portal
         </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card border-success shadow-sm h-100">
-        <div class="card-body text-center">
-          <i class="bi bi-file-earmark-text fs-1 text-success mb-2"></i>
-          <h6 class="text-muted mb-1">Documents</h6>
-          <h3 class="fw-bold mb-0">{{ total_documents|default:"417" }}</h3>
+        
+        <ul class="navbar-menu">
+            <li><a href="{% url 'admin_dashboard' %}">🏠 Dashboard</a></li>
+            <li><a href="{% url 'shipment_list' %}">📦 Shipments</a></li>
+            <li><a href="{% url 'document_list' %}">📄 Documents</a></li>
+            <li><a href="{% url 'admin_dashboard' %}" class="active">⚙️ Admin</a></li>
+        </ul>
+        
+        <div class="navbar-user">
+            <span>👤 {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
         </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card border-info shadow-sm h-100">
-        <div class="card-body text-center">
-          <i class="bi bi-truck fs-1 text-info mb-2"></i>
-          <h6 class="text-muted mb-1">Shipments</h6>
-          <h3 class="fw-bold mb-0">{{ total_shipments|default:"67" }}</h3>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card border-warning shadow-sm h-100">
-        <div class="card-body text-center">
-          <i class="bi bi-bar-chart-line fs-1 text-warning mb-2"></i>
-          <h6 class="text-muted mb-1">Revenue (USD)</h6>
-          <h3 class="fw-bold mb-0">${{ total_revenue|default:"85,900" }}</h3>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Actions and System Status Row -->
-  <div class="row mb-4 g-3">
-    <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-primary text-white fw-bold">
-          <i class="bi bi-lightning-charge me-2"></i>Quick Actions
-        </div>
-        <div class="card-body">
-          <div class="d-grid gap-2">
-            <a href="{% url 'signup' %}" class="btn btn-outline-primary">
-              <i class="bi bi-person-plus me-2"></i>Add New Client
-            </a>
-            <a href="{% url 'document_upload' %}" class="btn btn-outline-success">
-              <i class="bi bi-upload me-2"></i>Upload Document
-            </a>
-            <a href="{% url 'shipment_list' %}" class="btn btn-outline-info">
-              <i class="bi bi-geo-alt me-2"></i>Track Shipments
-            </a>
-            <button class="btn btn-outline-dark" onclick="alert('Generate Report feature coming soon!')">
-              <i class="bi bi-file-earmark-bar-graph me-2"></i>Generate Report
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-success text-white fw-bold">
-          <i class="bi bi-activity me-2"></i>Live System Status
-        </div>
-        <div class="card-body">
-          <div class="alert alert-success d-flex align-items-center mb-3">
-            <i class="bi bi-check-circle-fill fs-5 me-3"></i>
-            <div>
-              <strong>All systems operational</strong>
-              <small class="d-block text-muted">Last checked: Just now</small>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <div class="stat-label">Total Clients</div>
+                    <div class="stat-value">{{ total_clients }}</div>
+                </div>
             </div>
-          </div>
-          <div class="alert alert-warning d-flex align-items-center mb-0">
-            <i class="bi bi-exclamation-triangle-fill fs-5 me-3"></i>
-            <div>
-              <strong>No pending approvals</strong>
-              <small class="d-block text-muted">All clear</small>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-content">
+                    <div class="stat-label">Documents</div>
+                    <div class="stat-value">{{ total_documents }}</div>
+                </div>
             </div>
-          </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-content">
+                    <div class="stat-label">Shipments</div>
+                    <div class="stat-value">{{ total_shipments }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-label">Revenue (USD)</div>
+                    <div class="stat-value">$85,900</div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Recent Activity Table -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-secondary text-white fw-bold">
-      <i class="bi bi-clock-history me-2"></i>Recent User Activity
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th class="px-4">User</th>
-              <th>Action</th>
-              <th>Date & Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for activity in recent_activities %}
-            <tr>
-              <td class="px-4">
-                <i class="bi bi-person-circle me-2"></i>{{ activity.user.username }}
-              </td>
-              <td>{{ activity.action }}</td>
-              <td class="text-muted">{{ activity.timestamp|date:"Y-m-d h:i A" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="3" class="text-center text-muted py-4">
-                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                No recent activity found.
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Charts Row -->
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-header bg-info text-white fw-bold">
-          <i class="bi bi-graph-up me-2"></i>Monthly Shipment Trends
+        
+        <!-- Two Column Layout -->
+        <div class="dashboard-grid">
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">Quick Actions</div>
+                <div class="action-grid">
+                    <a href="{% url 'signup' %}" class="action-btn">Add New Client</a>
+                    <a href="{% url 'document_upload' %}" class="action-btn">Upload Document</a>
+                    <a href="{% url 'shipment_list' %}" class="action-btn">Track Shipments</a>
+                    <a href="#" class="action-btn btn-generate">Generate Report</a>
+                </div>
+            </div>
+            
+            <!-- Live System Status -->
+            <div class="card">
+                <div class="card-header green">Live System Status</div>
+                <div class="status-box green">
+                    ✅ All systems operational
+                </div>
+                <div class="status-box yellow">
+                    ⚠️ No pending approvals
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-          <canvas id="shipmentChart" style="max-height: 300px;"></canvas>
+        
+        <!-- Recent User Activity -->
+        <div class="activity-section">
+            <div class="section-header">Recent User Activity</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Date & Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3" class="empty-state">No recent activity found.</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-      </div>
     </div>
-
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-header bg-warning text-dark fw-bold">
-          <i class="bi bi-pie-chart me-2"></i>Revenue Breakdown
-        </div>
-        <div class="card-body">
-          <canvas id="revenueChart" style="max-height: 300px;"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  // Shipment Trends Chart
-  const shipmentCtx = document.getElementById('shipmentChart').getContext('2d');
-  const shipmentChart = new Chart(shipmentCtx, {
-      type: 'line',
-      data: {
-          labels: {{ shipment_labels|safe }},
-          datasets: [{
-              label: 'Shipments',
-              data: {{ shipment_data|safe }},
-              borderColor: 'rgba(13, 202, 240, 1)',
-              backgroundColor: 'rgba(13, 202, 240, 0.1)',
-              tension: 0.4,
-              fill: true
-          }]
-      },
-      options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-              legend: {
-                  display: false
-              }
-          },
-          scales: {
-              y: {
-                  beginAtZero: true
-              }
-          }
-      }
-  });
-
-  // Revenue Breakdown Chart
-  const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-  const revenueChart = new Chart(revenueCtx, {
-      type: 'bar',
-      data: {
-          labels: {{ revenue_labels|safe }},
-          datasets: [{
-              label: 'Revenue (USD)',
-              data: {{ revenue_data|safe }},
-              backgroundColor: 'rgba(255, 193, 7, 0.7)',
-              borderColor: 'rgba(255, 193, 7, 1)',
-              borderWidth: 1
-          }]
-      },
-      options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-              legend: {
-                  display: false
-              }
-          },
-          scales: {
-              y: {
-                  beginAtZero: true
-              }
-          }
-      }
-  });
-</script>
-{% endblock %}
+</body>
+</html>
