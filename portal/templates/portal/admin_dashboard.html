@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 {% extends 'portal/base.html' %}
 
 {% block content %}
@@ -12,7 +12,6 @@
           <i class="bi bi-people fs-1 text-primary mb-2"></i>
           <h6 class="text-muted mb-1">Total Clients</h6>
           <h3 class="fw-bold mb-0">{{ total_clients|default:"175" }}</h3>
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -283,14 +282,12 @@
     <nav class="navbar">
         <div class="navbar-brand">
             📦 Trade Portal
->>>>>>> f92483ce15a1d82d86cbf72db3fc4a0729117f5d
         </div>
         
         <ul class="navbar-menu">
             <li><a href="{% url 'admin_dashboard' %}">🏠 Dashboard</a></li>
             <li><a href="{% url 'shipment_list' %}">📦 Shipments</a></li>
             <li><a href="{% url 'document_list' %}">📄 Documents</a></li>
-            <li><a href="{% url 'admin_dashboard' %}" class="active">⚙️ Admin</a></li>
         </ul>
         
         <div class="navbar-user">
@@ -333,11 +330,10 @@
                 <div class="stat-icon">📊</div>
                 <div class="stat-content">
                     <div class="stat-label">Revenue (USD)</div>
-                    <div class="stat-value">$85,900</div>
+                    <div class="stat-value">${{ total_revenue }}</div>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
       </div>
     </div>
   </div>
@@ -392,7 +388,6 @@
 
           <canvas id="shipmentChart" style="max-height: 300px;"></canvas>
 
-=======
         
         <!-- Two Column Layout -->
         <div class="dashboard-grid">
@@ -436,10 +431,9 @@
                     </tr>
                 </tbody>
             </table>
->>>>>>> f92483ce15a1d82d86cbf72db3fc4a0729117f5d
         </div>
     </div>
-<<<<<<< HEAD
+
 
     <div class="col-md-6">
       <div class="card shadow-sm">
@@ -517,7 +511,5 @@
   });
 </script>
 {% endblock %}
-=======
 </body>
 </html>
->>>>>>> f92483ce15a1d82d86cbf72db3fc4a0729117f5d
